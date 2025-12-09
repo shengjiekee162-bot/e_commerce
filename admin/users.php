@@ -2,7 +2,7 @@
 
 include 'admin_header.php';
 
-$sql = "SELECT `id`,`name`,`email`,`phone`,`role`,`status`,`created_at` FROM `users` ORDER BY created_at DESC";
+$sql = "SELECT `id`,`name`,`email`,`phone`,`role`,`status`,`created_at` FROM `users` ORDER BY id ASC";
 $result = $conn->query($sql); 
 ?>
 
