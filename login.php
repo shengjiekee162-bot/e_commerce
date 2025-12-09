@@ -1,0 +1,168 @@
+<?php
+session_start();
+include 'config/db.php';
+
+$error = "";
+
+// 写日志函数
+function write_log($message){
+    $log_file = __DIR__ . '/config/login_log.txt';
+    $date = date("Y-m-d H:i:s");
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown IP';
+    $log_message = "[$date][IP: $ip] $message" . PHP_EOL;
+    file_put_contents($log_file, $log_message, FILE_APPEND);
+}
+
+// ======================
+// 自动登录（Remember Me）
+// ======================
+if(!isset($_SESSION['user_id']) && isset($_COOKIE['remember_me'])){
+    list($selector, $validator) = explode(':', $_COOKIE['remember_me']);
+
+    $sql = "SELECT * FROM user_tokens WHERE selector = ? AND expires_at > NOW()";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('s', $selector);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if($result && $result->num_rows === 1){
+        $token_row = $result->fetch_assoc();
+
+        if(hash_equals($token_row['hashed_validator'], hash('sha256', $validator))){
+            $sql = "SELECT * FROM users WHERE id = ? AND status='active'";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param('i', $token_row['user_id']);
+            $stmt->execute();
+            $user_result = $stmt->get_result();
+
+            if($user_result && $user_result->num_rows === 1){
+                $user = $user_result->fetch_assoc();
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user'] = $user['name'];
+                $_SESSION['role'] = $user['role'];
+
+                write_log("Auto Login Success: {$user['email']} via Remember Me. Role: {$user['role']}");
+                header("Location: index.php");
+                exit;
+            } else {
+                write_log("Auto Login Failed: User not found for ID {$token_row['user_id']}");
+            }
+        }
+    }
+}
+
+// ======================
+// 处理登录请求
+// ======================
+try{
+    if($_SERVER['REQUEST_METHOD'] === "POST"){
+        $email = trim($_POST['email']);
+        $password = trim($_POST['password']);
+        $remember = isset($_POST['remember']);
+
+        $sql = "SELECT * FROM users WHERE email = ? AND status='active'";
+        $stmt = $conn->prepare($sql);
+        if(!$stmt){
+            throw new Exception("Database query failed: " . $conn->error);
+        }
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if($result && $result->num_rows === 1){
+            $user = $result->fetch_assoc();
+
+            if(password_verify($password, $user['password'])){
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user'] = $user['name'];
+                $_SESSION['role'] = $user['role'];
+
+                // ======================
+                // Remember Me 功能
+                // ======================
+                if($remember){
+                    // 清理过期 token
+                    $conn->query("DELETE FROM user_tokens WHERE expires_at < NOW()");
+
+                    $selector = bin2hex(random_bytes(6));
+                    $validator = bin2hex(random_bytes(32));
+                    $hashed_validator = hash('sha256', $validator);
+                    $expiry = date("Y-m-d H:i:s", time() + 7*24*60*60);
+
+                    $sql_token = "INSERT INTO user_tokens (user_id, selector, hashed_validator, expires_at) VALUES (?, ?, ?, ?)";
+                    $stmt_token = $conn->prepare($sql_token);
+                    $stmt_token->bind_param('isss', $user['id'], $selector, $hashed_validator, $expiry);
+                    $stmt_token->execute();
+
+                    setcookie('remember_me', $selector . ":" . $validator, [
+                        'expires' => time() + 7*24*60*60,
+                        'path' => '/',
+                        'httponly' => true,
+                        'secure' => isset($_SERVER['HTTPS']),
+                        'samesite' => 'Lax'
+                    ]);
+                }
+
+                write_log("Login Success: {$user['email']} Role: {$user['role']}");
+
+                // 跳转
+                if($user['role'] === 'admin'){
+                    header("Location: admin/admin_dashboard.php");
+                } else {
+                    header("Location: index.php");
+                }
+                exit;
+
+            } else {
+                $error = "Invalid password.";
+                write_log("Login Failed: Incorrect password for {$email}");
+            }
+        } else {
+            $error = "No account found with that email.";
+            write_log("Login Failed: No account found for {$email}");
+        }
+    }
+}catch(Exception $e){
+    $error = "An error occurred. Please try again later.";
+    write_log("Error: " . $e->getMessage());
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyShop | Login</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light text-dark">
+<div class="container d-flex justify-content-center align-items-center" style="height:100vh;">
+    <div class="card shadow p-4 bg-white text-dark" style="width:400px;">
+        <h3 class="text-center mb-4">Login</h3>
+
+        <?php if($error): ?>
+            <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
+        <?php endif; ?>
+
+        <form method="POST" action="login.php">
+            <div class="mb-3">
+                <label>Email</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" name="remember" class="form-check-input" id="rememberMe">
+                <label class="form-check-label" for="rememberMe">Remember Me</label>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+        <p class="text-center mt-2">Don't have an account? <a href="register.php">Register here</a></p>
+        <p class="text-center mt-1"><a href="forgot_password.php">Forgot Password</a></p>
+    </div>
+</div>
+</body>
+</html>
