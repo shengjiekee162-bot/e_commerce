@@ -29,6 +29,71 @@ $result = $conn->query($sql);
 
 ?>
 
+<style>
+    .category-list table {
+        box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+        border-radius: 12px;
+        overflow: hidden;
+        background: linear-gradient(90deg, #fff 0%, #eee 100%);
+    }
+    .category-list th {
+        background: linear-gradient(90deg, #222 0%, #888 100%);
+        color: #fff;
+        font-weight: bold;
+        letter-spacing: 1px;
+        font-size: 1.08em;
+        border: none;
+    }
+    .category-list th, .category-list td {
+        vertical-align: middle;
+        transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .category-list tbody tr {
+        cursor: pointer;
+        background: linear-gradient(90deg, #fff 0%, #eee 100%);
+        color: #222;
+        transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .category-list tbody tr:hover {
+        background: linear-gradient(90deg, #eee 0%, #ccc 100%);
+        color: #000;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        transform: scale(1.01);
+    }
+    .category-list tbody tr.active-row {
+        background: linear-gradient(90deg, #000 0%, #444 100%);
+        color: #fff;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+        transform: scale(1.02);
+    }
+    .btn {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(90deg, #222 0%, #555 100%);
+        color: #fff;
+        border: none;
+        transition: box-shadow 0.2s, transform 0.2s, background 0.2s, color 0.2s;
+    }
+    .btn:hover {
+        background: linear-gradient(90deg, #000 0%, #333 100%);
+        color: #fff;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+        transform: translateY(-2px) scale(1.06);
+    }
+</style>
+<script>
+    // 行点击高亮
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.category-list tbody tr').forEach(function(row) {
+            row.addEventListener('click', function() {
+                document.querySelectorAll('.category-list tbody tr').forEach(function(r) {
+                    r.classList.remove('active-row');
+                });
+                row.classList.add('active-row');
+            });
+        });
+    });
+</script>
 <div class='content-wrapper'>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold">Category List</h2>
