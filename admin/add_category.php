@@ -4,6 +4,9 @@ include_once '../config/db.php';
 include_once 'admin_header.php';
 include_once 'admin_auth.php';  
 
+//admin@ecommerce.local
+//admin123
+
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $category_name = $_POST['category_name'];
 

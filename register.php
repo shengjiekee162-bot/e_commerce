@@ -45,7 +45,7 @@ try{
         }
 
         $hashedPass = password_hash($password, PASSWORD_DEFAULT);
-        $role = "customer";
+        $role = "buyer";
         $status = "active";
 
         $insertSQL = "INSERT INTO users (`name`,`email`,`password`,`phone`,`role`,`status`,`created_at`) 
@@ -63,7 +63,7 @@ try{
     $error = $e->getMEssage();
 
     $logMsg = "[". date('Y-m-d H:i:s')."] REGISTER ERROR: " .$error." | Email: ".($email ?? '-')."\n";
-    file_put_content('error_log.txt', $logMsg, FILE_APPEND);
+    file_put_contents('error_log.txt', $logMsg, FILE_APPEND);
 }
 
 ?>

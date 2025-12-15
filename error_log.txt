@@ -1,0 +1,2 @@
+[2025-12-15 01:27:20] REGISTER ERROR: Data truncated for column 'role' at row 1 | Email: shengjiekee162@gmail.com
+[2025-12-15 02:27:05] REGISTER ERROR: Data truncated for column 'role' at row 1 | Email: shengjiekee162@gmail.com

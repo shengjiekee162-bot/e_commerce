@@ -22,3 +22,7 @@
 [2025-12-08 00:17:39][IP: ::1] Login Success: User Email admin@example.com logged in successfully. Role: admin
 [2025-12-09 00:37:39][IP: ::1] Login Failed: No account found for email admin@exampl.cpm.
 [2025-12-09 00:38:27][IP: ::1] Login Success: User Email admin@example.com logged in successfully. Role: admin
+[2025-12-10 00:39:05][IP: ::1] Login Success: User Email admin@ecommerce.local logged in successfully. Role: admin
+[2025-12-15 01:26:10][IP: ::1] Login Failed: No account found for email shengjiekee162@gmail.com.
+[2025-12-15 02:29:22][IP: ::1] Login Success: User Email shengjiekee162@gmail.com logged in successfully. Role: buyer
+[2025-12-15 02:40:55][IP: ::1] Login Success: User Email shengjiekee162@gmail.com logged in successfully. Role: buyer

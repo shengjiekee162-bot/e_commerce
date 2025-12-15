@@ -1,33 +1,376 @@
-body{
-    font-family: Arial, sans-serif;
+* {
     margin: 0;
-    background-color: #f5f5f5;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    padding-top: 60px;
+}
+
+/* ==================== TOP BAR ==================== */
+.top-bar {
+    background-color: #333;
+    color: white;
+    padding: 8px 0;
+    font-size: 0.9rem;
+    display: none;
+}
+
+.top-bar a {
+    color: white;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+.top-bar a:hover {
+    text-decoration: underline;
+}
+
+/* ==================== MAIN NAV ==================== */
+.main-nav {
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.main-nav .container {
+    flex-wrap: wrap;
+}
+
+.logo a {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.search-bar {
+    min-width: 200px;
+    margin: 10px 15px !important;
+}
+
+.search-bar input {
+    border-radius: 4px 0 0 4px;
+    border: 1px solid #ddd;
+}
+
+.search-bar button {
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    padding: 8px 15px;
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background-color: #f57c00;
+}
+
+.cart-btn {
+    color: #333;
+    text-decoration: none;
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.cart-btn span {
+    background-color: #ff5252;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+/* ==================== HAMBURGER MENU ==================== */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 10px;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    border-radius: 2px;
+    transition: 0.3s;
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(10px, 10px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* ==================== NAVBAR ==================== */
 .navbar {
     background-color: #333;
     color: white;
     display: flex;
-    justify-content : space-between;
-    padding: 10px 20px;
+    justify-content: center;
+    padding: 12px 0;
+    width: 100%;
+    position: relative;
 }
 
 .navbar a {
     color: white;
     text-decoration: none;
     margin: 0 10px;
+    padding: 10px 15px;
+    transition: color 0.3s;
 }
 
 .navbar a:hover {
-    text-decoration: underline;
+    color: #ff9800;
+    text-decoration: none;
 }
 
-footer{
+.nav-menu {
+    display: flex;
+    gap: 20px;
+    flex-direction: row;
+}
+
+.nav-menu a {
+    margin: 0;
+}
+
+/* ==================== FOOTER ==================== */
+footer {
     background-color: #333;
     color: white;
     text-align: center;
-    padding: 10px 0;
+    padding: 20px 0;
     position: fixed;
-    width: 100%;
     bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin-top: 50px;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 80px;
+}
+
+/* ==================== MOBILE RESPONSIVE (SM: 576px) ==================== */
+@media (max-width: 575.98px) {
+    body {
+        padding-top: 50px;
+    }
+
+    .top-bar {
+        display: none !important;
+    }
+
+    .main-nav .container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .logo {
+        text-align: center;
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .logo a {
+        font-size: 24px;
+    }
+
+    .search-bar {
+        width: 100%;
+        margin: 10px 0 !important;
+        flex-grow: 1;
+    }
+
+    .cart-btn {
+        display: none;
+    }
+
+    .hamburger {
+        display: flex !important;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+
+    .navbar {
+        position: fixed;
+        bottom: -300px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+        transition: bottom 0.3s ease-in-out;
+        padding: 20px;
+        z-index: 999;
+    }
+
+    .navbar.active {
+        bottom: 0;
+    }
+
+    .nav-menu {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+    }
+
+    .nav-menu a {
+        display: block;
+        padding: 12px 0 !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+}
+
+/* ==================== TABLET (MD: 768px) ==================== */
+@media (min-width: 576px) and (max-width: 991.98px) {
+    body {
+        padding-top: 65px;
+    }
+
+    .top-bar {
+        display: none;
+    }
+
+    .main-nav .container {
+        padding: 10px 15px;
+    }
+
+    .search-bar {
+        min-width: 250px;
+        margin: 0 15px !important;
+    }
+
+    .cart-btn {
+        display: inline-block;
+    }
+
+    .hamburger {
+        display: flex !important;
+    }
+
+    .navbar {
+        position: fixed;
+        bottom: -400px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        transition: bottom 0.3s ease-in-out;
+        padding: 20px;
+        z-index: 999;
+    }
+
+    .navbar.active {
+        bottom: 0;
+    }
+
+    .nav-menu {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+    }
+
+    .nav-menu a {
+        display: block;
+        padding: 12px 0 !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+}
+
+/* ==================== DESKTOP (LG: 992px and above) ==================== */
+@media (min-width: 992px) {
+    body {
+        padding-top: 100px;
+    }
+
+    .top-bar {
+        display: block;
+    }
+
+    .main-nav .container {
+        flex-wrap: nowrap;
+        gap: 15px;
+    }
+
+    .search-bar {
+        flex-grow: 1;
+        margin: 0 20px !important;
+    }
+
+    .hamburger {
+        display: flex !important;
+        position: relative;
+        top: auto;
+        right: auto;
+    }
+
+    .navbar {
+        position: fixed !important;
+        bottom: -400px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        transition: bottom 0.3s ease-in-out;
+        z-index: 999;
+    }
+
+    .navbar.active {
+        bottom: 0;
+    }
+
+    .nav-menu {
+        display: flex !important;
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+    }
+
+    .nav-menu a {
+        display: block !important;
+        padding: 12px 0 !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    }
+
+    .nav-menu > div {
+        display: none !important;
+    }
+
+    .cart-btn {
+        display: inline-block;
+    }
 }
